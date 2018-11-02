@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Practical3Q5 extends JFrame {
     public static void main(String[] args) {
@@ -28,7 +30,6 @@ public class Practical3Q5 extends JFrame {
         add(jpnTeller);
         add(jpnTable);
         add(jpnButton);
-
 
 
         pack();
@@ -89,11 +90,72 @@ class JpnTable extends JPanel {
         add(new JLabel(""));
         add(total);
 
+        KeyListener keyListener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                update(e);
+            }
+        };
+
+        quan100.addKeyListener(keyListener);
+        quan50.addKeyListener(keyListener);
+        quan10.addKeyListener(keyListener);
+        quan5.addKeyListener(keyListener);
+        quan1.addKeyListener(keyListener);
+
         value100.setEditable(false);
         value50.setEditable(false);
         value10.setEditable(false);
         value5.setEditable(false);
         value1.setEditable(false);
         total.setEditable(false);
+
+        quan100.setHorizontalAlignment(JTextField.RIGHT);
+        quan50.setHorizontalAlignment(JTextField.RIGHT);
+        quan10.setHorizontalAlignment(JTextField.RIGHT);
+        quan5.setHorizontalAlignment(JTextField.RIGHT);
+        quan1.setHorizontalAlignment(JTextField.RIGHT);
+        value100.setHorizontalAlignment(JTextField.RIGHT);
+        value50.setHorizontalAlignment(JTextField.RIGHT);
+        value10.setHorizontalAlignment(JTextField.RIGHT);
+        value5.setHorizontalAlignment(JTextField.RIGHT);
+        value1.setHorizontalAlignment(JTextField.RIGHT);
+        total.setHorizontalAlignment(JTextField.RIGHT);
+    }
+
+    static void update(KeyEvent keyEvent) {
+        try {
+            if (keyEvent.getSource().equals(quan100))
+                process(quan100, 100, value100);
+            else if (keyEvent.getSource().equals(quan50))
+                process(quan50, 50, value50);
+            else if (keyEvent.getSource().equals(quan10))
+                process(quan10, 10, value10);
+            else if (keyEvent.getSource().equals(quan5))
+                process(quan5, 5, value5);
+            else
+                process(quan1, 1, value1);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private static void process(JTextField quantity, int denomination, JTextField value) {
+        String string = quantity.getText();
+        int i;
+
+        if (string.equals(""))
+            i = 0;
+        else
+            i = Integer.parseInt(string);
+        value.setText((i * denomination) + "");
     }
 }
