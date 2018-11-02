@@ -9,22 +9,27 @@ public class Practical3Q5 extends JFrame {
     private Practical3Q5() {
 
         JLabel jlbTitle = new JLabel("Transfer Funds");
-        //TODO Bold, Center
         JPanel jpnTeller = new JpnTeller();
         JPanel jpnTable = new JpnTable();
         JPanel jpnButton = new JPanel();
-
-        jlbTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-
+        JButton jbtOK = new JButton("OK");
+        JButton jbtCancel = new JButton("Cancel");
 
         getContentPane().setLayout(new BoxLayout(super.getContentPane(), BoxLayout.Y_AXIS));
 
+        jlbTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        jlbTitle.setFont(new Font("SANS", Font.BOLD, 20));
+
+        jpnButton.add(jbtOK);
+        jpnButton.add(jbtCancel);
+        jpnButton.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         add(jlbTitle);
         add(jpnTeller);
         add(jpnTable);
         add(jpnButton);
+
+
 
         pack();
         setTitle("Login");
@@ -40,9 +45,9 @@ class JpnTeller extends JPanel {
 
     JpnTeller() {
         super.setLayout(new GridLayout(2, 2));
-        add(new JLabel("From Teller"));
+        add(new JLabel("From Teller", SwingConstants.RIGHT));
         add(fromTeller);
-        add(new JLabel("To Teller"));
+        add(new JLabel("To Teller", SwingConstants.RIGHT));
         add(toTeller);
     }
 }
@@ -62,26 +67,33 @@ class JpnTable extends JPanel {
 
     JpnTable() {
         super.setLayout(new GridLayout(7, 3));
-        add(new JLabel("Denomination"));
-        add(new JLabel("Quantity"));
-        add(new JLabel("Value"));
-        add(new JLabel("100"));
+        add(new JLabel("Denomination", SwingConstants.CENTER));
+        add(new JLabel("Quantity", SwingConstants.CENTER));
+        add(new JLabel("Value", SwingConstants.CENTER));
+        add(new JLabel("100", SwingConstants.RIGHT));
         add(quan100);
         add(value100);
-        add(new JLabel("50"));
+        add(new JLabel("50", SwingConstants.RIGHT));
         add(quan50);
         add(value50);
-        add(new JLabel("10"));
+        add(new JLabel("10", SwingConstants.RIGHT));
         add(quan10);
         add(value10);
-        add(new JLabel("5"));
+        add(new JLabel("5", SwingConstants.RIGHT));
         add(quan5);
         add(value5);
-        add(new JLabel("1"));
+        add(new JLabel("1", SwingConstants.RIGHT));
         add(quan1);
         add(value1);
+        add(new JLabel("Total", SwingConstants.RIGHT));
+        add(new JLabel(""));
         add(total);
 
-
+        value100.setEditable(false);
+        value50.setEditable(false);
+        value10.setEditable(false);
+        value5.setEditable(false);
+        value1.setEditable(false);
+        total.setEditable(false);
     }
 }
