@@ -14,24 +14,23 @@ public class Practical3Q5 extends JFrame {
         JPanel jpnTable = new JpnTable();
         JPanel jpnButton = new JPanel();
 
-        jlbTitle.setLayout(new BoxLayout(jlbTitle,BoxLayout.Y_AXIS));
-        jpnTeller.setLayout(new BoxLayout(jpnTeller,BoxLayout.Y_AXIS));
-        jpnTable.setLayout(new BoxLayout(jpnTable,BoxLayout.Y_AXIS));
-        jpnButton.setLayout(new BoxLayout(jpnButton,BoxLayout.Y_AXIS));
+        jlbTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
 
-        add(jlbTitle, BorderLayout.CENTER);
+        getContentPane().setLayout(new BoxLayout(super.getContentPane(), BoxLayout.Y_AXIS));
+
+
+        add(jlbTitle);
         add(jpnTeller);
         add(jpnTable);
         add(jpnButton);
 
         pack();
-        super.setTitle("Login");
-        //super.setSize(400,200);
-        super.setLocationRelativeTo(null);
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.setVisible(true);
+        setTitle("Login");
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
     }
 }
 
