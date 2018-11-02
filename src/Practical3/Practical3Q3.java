@@ -1,7 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Practical3Q3 extends JFrame {
@@ -25,7 +23,7 @@ public class Practical3Q3 extends JFrame {
         jpnBttn.add(jbtRset);
         jpnBttn.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        jbtLgin.addActionListener(e -> JpnPass.verfiy());
+        jbtLgin.addActionListener(e -> JpnPass.verify());
         jbtRset.addActionListener(e -> JpnPass.reset());
 
         pack();
@@ -36,7 +34,6 @@ public class Practical3Q3 extends JFrame {
         super.setVisible(true);
     }
 }
-
 
 class JpnPass extends JPanel{
     private static JTextField username = new JTextField(10);
@@ -51,16 +48,16 @@ class JpnPass extends JPanel{
         add(password);
     }
 
-    static void verfiy(){
+    static void verify(){
         String trueUsername = "Verniy";
         char[] truePassword = {'1','2','3'};
 
         if (username.getText().equals(trueUsername) && Arrays.equals(password.getPassword(),truePassword)){
-            JOptionPane.showMessageDialog(null,"FUCK YOU " + username.getText());
+            JOptionPane.showMessageDialog(null,"Trick and Treat! " + username.getText());
             new Practical3Q2();
         }
         else
-            JOptionPane.showMessageDialog(null,"FUCK OFF");
+            JOptionPane.showMessageDialog(null,"Shoo!");
     }
 
     static void reset() {
