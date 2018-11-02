@@ -7,7 +7,7 @@ public class Practical3Q2 extends JFrame {
         new Practical3Q2();
     }
 
-    private Practical3Q2() {
+    Practical3Q2() {
 
         JPanel jpnInput = new JpnInput();
         JPanel jpnComplete = new JPanel(new FlowLayout());
@@ -20,7 +20,7 @@ public class Practical3Q2 extends JFrame {
 
         add(jpnInput, BorderLayout.CENTER);
         add(jpnComplete, BorderLayout.SOUTH);
-        
+
         super.setTitle("Loan Calculator");
         super.setSize(400, 300);
         super.setLocationRelativeTo(null);
