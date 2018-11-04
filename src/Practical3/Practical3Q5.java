@@ -1,11 +1,13 @@
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class Practical3Q5 extends JFrame {
     public static void main(String[] args) {
-        new Practical3Q5();
+        EventQueue.invokeLater(Practical3Q5::new);
     }
 
     private Practical3Q5() {
@@ -90,26 +92,71 @@ class JpnTable extends JPanel {
         add(new JLabel(""));
         add(total);
 
-        KeyListener keyListener = new KeyListener() {
+        DocumentFilter df = new DocumentFilter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void insertString(FilterBypass fb, int i, String string, AttributeSet as) throws BadLocationException {
+                if (isDigit(string)) {
+                    super.insertString(fb, i, string, as);
+                    calcAndSetTotal();
+                }
             }
 
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void remove(FilterBypass fb, int i, int i1) throws BadLocationException {
+                super.remove(fb, i, i1);
+                calcAndSetTotal();
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-                update(e);
+            public void replace(FilterBypass fb, int i, int i1, String string, AttributeSet as) throws BadLocationException {
+                if (isDigit(string)) {
+                    super.replace(fb, i, i1, string, as);
+                    calcAndSetTotal();
+
+                }
+            }
+
+            private boolean isDigit(String string) {
+                for (int n = 0; n < string.length(); n++) {
+                    char c = string.charAt(n);//get a single character of the string
+                    //System.out.println(c);
+                    if (!Character.isDigit(c)) {//if its an alphabetic character or white space
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            void calcAndSetTotal() {
+                int sum = 0;
+
+
+
+                if (!quan100.getText().isEmpty()) {
+                    sum += Integer.parseInt(quan100.getText());
+                }
+                if (!quan50.getText().isEmpty()) {
+                    sum += Integer.parseInt(quan50.getText());
+                }
+                if (!quan10.getText().isEmpty()) {
+                    sum += Integer.parseInt(quan10.getText());
+                }
+                if (!quan5.getText().isEmpty()) {
+                    sum += Integer.parseInt(quan5.getText());
+                }
+                if (!quan1.getText().isEmpty()) {
+                    sum += Integer.parseInt(quan1.getText());
+                }
+
+                total.setText(String.valueOf(sum));
             }
         };
 
-        quan100.addKeyListener(keyListener);
-        quan50.addKeyListener(keyListener);
-        quan10.addKeyListener(keyListener);
-        quan5.addKeyListener(keyListener);
-        quan1.addKeyListener(keyListener);
+        ((AbstractDocument) (quan100.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (quan50.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (quan10.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (quan5.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (quan1.getDocument())).setDocumentFilter(df);
 
         value100.setEditable(false);
         value50.setEditable(false);
@@ -117,6 +164,13 @@ class JpnTable extends JPanel {
         value5.setEditable(false);
         value1.setEditable(false);
         total.setEditable(false);
+
+        value100.setFocusable(false);
+        value50.setFocusable(false);
+        value10.setFocusable(false);
+        value5.setFocusable(false);
+        value1.setFocusable(false);
+        total.setFocusable(false);
 
         quan100.setHorizontalAlignment(JTextField.RIGHT);
         quan50.setHorizontalAlignment(JTextField.RIGHT);
@@ -129,33 +183,5 @@ class JpnTable extends JPanel {
         value5.setHorizontalAlignment(JTextField.RIGHT);
         value1.setHorizontalAlignment(JTextField.RIGHT);
         total.setHorizontalAlignment(JTextField.RIGHT);
-    }
-
-    static void update(KeyEvent keyEvent) {
-        try {
-            if (keyEvent.getSource().equals(quan100))
-                process(quan100, 100, value100);
-            else if (keyEvent.getSource().equals(quan50))
-                process(quan50, 50, value50);
-            else if (keyEvent.getSource().equals(quan10))
-                process(quan10, 10, value10);
-            else if (keyEvent.getSource().equals(quan5))
-                process(quan5, 5, value5);
-            else
-                process(quan1, 1, value1);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    private static void process(JTextField quantity, int denomination, JTextField value) {
-        String string = quantity.getText();
-        int i;
-
-        if (string.equals(""))
-            i = 0;
-        else
-            i = Integer.parseInt(string);
-        value.setText((i * denomination) + "");
     }
 }
