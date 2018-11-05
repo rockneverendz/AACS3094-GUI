@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -19,7 +21,12 @@ public class Practical3Q5 extends JFrame {
         JButton jbtOK = new JButton("OK");
         JButton jbtCancel = new JButton("Cancel");
 
-        getContentPane().setLayout(new BoxLayout(super.getContentPane(), BoxLayout.Y_AXIS));
+        /*
+         * getContentPane() to select the JFrame's global panel. setLayout() to set the
+         * panel's layout. And for some reason BoxLayout only applies for panels, so
+         * setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); doesn't work.
+         */
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         jlbTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         jlbTitle.setFont(new Font("SANS", Font.BOLD, 20));
@@ -32,7 +39,6 @@ public class Practical3Q5 extends JFrame {
         add(jpnTeller);
         add(jpnTable);
         add(jpnButton);
-
 
         pack();
         setTitle("Login");
@@ -61,12 +67,12 @@ class JpnTable extends JPanel {
     private static JTextField quan10 = new JTextField();
     private static JTextField quan5 = new JTextField();
     private static JTextField quan1 = new JTextField();
-    private static JTextField value100 = new JTextField();
-    private static JTextField value50 = new JTextField();
-    private static JTextField value10 = new JTextField();
-    private static JTextField value5 = new JTextField();
-    private static JTextField value1 = new JTextField();
-    private static JTextField total = new JTextField();
+    private static JTextField value100 = new JTextField("0.00");
+    private static JTextField value50 = new JTextField("0.00");
+    private static JTextField value10 = new JTextField("0.00");
+    private static JTextField value5 = new JTextField("0.00");
+    private static JTextField value1 = new JTextField("0.00");
+    private static JTextField total = new JTextField("0.00");
 
     JpnTable() {
         super.setLayout(new GridLayout(7, 3));
@@ -92,71 +98,104 @@ class JpnTable extends JPanel {
         add(new JLabel(""));
         add(total);
 
-        DocumentFilter df = new DocumentFilter() {
+        DocumentFilter documentFilter = new DocumentFilter() {
             @Override
-            public void insertString(FilterBypass fb, int i, String string, AttributeSet as) throws BadLocationException {
-                if (isDigit(string)) {
-                    super.insertString(fb, i, string, as);
-                    calcAndSetTotal();
-                }
+            public void replace(FilterBypass fb, int offset, int length, String text,
+                                AttributeSet attrs) throws BadLocationException {
+                if (isDigit(text)) fb.replace(offset, length, text, attrs);
             }
 
-            @Override
-            public void remove(FilterBypass fb, int i, int i1) throws BadLocationException {
-                super.remove(fb, i, i1);
-                calcAndSetTotal();
-            }
-
-            @Override
-            public void replace(FilterBypass fb, int i, int i1, String string, AttributeSet as) throws BadLocationException {
-                if (isDigit(string)) {
-                    super.replace(fb, i, i1, string, as);
-                    calcAndSetTotal();
-
-                }
-            }
-
-            private boolean isDigit(String string) {
-                for (int n = 0; n < string.length(); n++) {
-                    char c = string.charAt(n);//get a single character of the string
-                    //System.out.println(c);
-                    if (!Character.isDigit(c)) {//if its an alphabetic character or white space
-                        return false;
-                    }
+            /**
+             * Used to check inserted string has any alphabetic character
+             * or white space.
+             * @param text String to check
+             */
+            private boolean isDigit(String text) {
+                for (int n = 0; n < text.length(); n++) {
+                    char c = text.charAt(n);
+                    if (!Character.isDigit(c)) return false;
                 }
                 return true;
             }
 
-            void calcAndSetTotal() {
-                int sum = 0;
+            /*
+             * Q  -  Why not use this to calculate the value
+             *       from the quantity inserted by the user?
+             * A  -  1. This is a filter. Nothing more, nothing less.
+             *       2. We can't getSource() from this.
+             *          Meaning we don't know where the input is coming from.
+             *          And checking every field every time
+             *          the user updates is inefficient.
+             *          Thus I let documentListener do that task.
+             *
+             * Q  -  Where's the remove method?
+             * A  -  There's no need to check what user removed.
+             *
+             * Q  -  Where's the insertString method?
+             * A  -  That method only gets invoked when
+             *       textField.getDocument().insertString() is used.
+             *       When the user edit the textField,
+             *       it only invokes replace method.
+             */
+        };
 
+        DocumentListener documentListener = new DocumentListener() {
+            private int int100 = 0;
+            private int int50 = 0;
+            private int int10 = 0;
+            private int int5 = 0;
+            private int int1 = 0;
 
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                sort(e);
+            }
 
-                if (!quan100.getText().isEmpty()) {
-                    sum += Integer.parseInt(quan100.getText());
-                }
-                if (!quan50.getText().isEmpty()) {
-                    sum += Integer.parseInt(quan50.getText());
-                }
-                if (!quan10.getText().isEmpty()) {
-                    sum += Integer.parseInt(quan10.getText());
-                }
-                if (!quan5.getText().isEmpty()) {
-                    sum += Integer.parseInt(quan5.getText());
-                }
-                if (!quan1.getText().isEmpty()) {
-                    sum += Integer.parseInt(quan1.getText());
-                }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                sort(e);
+            }
 
-                total.setText(String.valueOf(sum));
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+            private void sort(DocumentEvent e) {
+                if (e.getDocument() == quan100.getDocument())
+                    int100 = update(100, quan100, value100);
+                else if (e.getDocument() == quan50.getDocument())
+                    int50 = update(50, quan50, value50);
+                else if (e.getDocument() == quan10.getDocument())
+                    int10 = update(10, quan10, value10);
+                else if (e.getDocument() == quan5.getDocument())
+                    int5 = update(5, quan5, value5);
+                else
+                    int1 = update(1, quan1, value1);
+                total.setText(int100 + int50 + int10 + int5 + int1 + ".00");
+            }
+
+            private int update(int denominator, JTextField quantity, JTextField value) {
+                int i;
+                if (!quantity.getText().isEmpty())
+                    i = Integer.parseInt(quantity.getText()) * denominator;
+                else
+                    i = 0;
+
+                value.setText(i + ".00");
+                return i;
             }
         };
 
-        ((AbstractDocument) (quan100.getDocument())).setDocumentFilter(df);
-        ((AbstractDocument) (quan50.getDocument())).setDocumentFilter(df);
-        ((AbstractDocument) (quan10.getDocument())).setDocumentFilter(df);
-        ((AbstractDocument) (quan5.getDocument())).setDocumentFilter(df);
-        ((AbstractDocument) (quan1.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (quan100.getDocument())).setDocumentFilter(documentFilter);
+        ((AbstractDocument) (quan50.getDocument())).setDocumentFilter(documentFilter);
+        ((AbstractDocument) (quan10.getDocument())).setDocumentFilter(documentFilter);
+        ((AbstractDocument) (quan5.getDocument())).setDocumentFilter(documentFilter);
+        ((AbstractDocument) (quan1.getDocument())).setDocumentFilter(documentFilter);
+        quan100.getDocument().addDocumentListener(documentListener);
+        quan50.getDocument().addDocumentListener(documentListener);
+        quan10.getDocument().addDocumentListener(documentListener);
+        quan5.getDocument().addDocumentListener(documentListener);
+        quan1.getDocument().addDocumentListener(documentListener);
 
         value100.setEditable(false);
         value50.setEditable(false);
