@@ -1,6 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -34,6 +32,9 @@ public class Practical3Q5 extends JFrame {
         jpnButton.add(jbtOK);
         jpnButton.add(jbtCancel);
         jpnButton.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        jbtOK.addActionListener(e -> JOptionPane.showMessageDialog(
+                this,
+                jpnTeller.toString() + jpnTable.toString()));
 
         add(jlbTitle);
         add(jpnTeller);
@@ -59,14 +60,20 @@ class JpnTeller extends JPanel {
         add(new JLabel("To Teller", SwingConstants.RIGHT));
         add(toTeller);
     }
+
+    @Override
+    public String toString() {
+        return "From teller = " + fromTeller.getText() + "\n" +
+                "To teller = " + toTeller.getText() + "\n";
+    }
 }
 
 class JpnTable extends JPanel {
-    private static JTextField quan100 = new JTextField(10);
-    private static JTextField quan50 = new JTextField();
-    private static JTextField quan10 = new JTextField();
-    private static JTextField quan5 = new JTextField();
-    private static JTextField quan1 = new JTextField();
+    private static JTextField quan100 = new JTextField("0");
+    private static JTextField quan50 = new JTextField("0");
+    private static JTextField quan10 = new JTextField("0");
+    private static JTextField quan5 = new JTextField("0");
+    private static JTextField quan1 = new JTextField("0");
     private static JTextField value100 = new JTextField("0.00");
     private static JTextField value50 = new JTextField("0.00");
     private static JTextField value10 = new JTextField("0.00");
@@ -99,10 +106,28 @@ class JpnTable extends JPanel {
         add(total);
 
         DocumentFilter documentFilter = new DocumentFilter() {
+            private int int100 = 0;
+            private int int50 = 0;
+            private int int10 = 0;
+            private int int5 = 0;
+            private int int1 = 0;
+
+            @Override
+            public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+                if (fb.getDocument().getLength() != length)
+                    super.remove(fb, offset, length);
+                else
+                    super.replace(fb, offset, length, "0", null);
+                sort(fb);
+            }
+
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text,
                                 AttributeSet attrs) throws BadLocationException {
-                if (isDigit(text)) fb.replace(offset, length, text, attrs);
+                if (isDigit(text)) {
+                    super.replace(fb, offset, length, text, attrs);
+                    sort(fb);
+                }
             }
 
             /**
@@ -118,62 +143,30 @@ class JpnTable extends JPanel {
                 return true;
             }
 
-            /*
-             * Q  -  Why not use this to calculate the value
-             *       from the quantity inserted by the user?
-             * A  -  1. This is a filter. Nothing more, nothing less.
-             *       2. We can't getSource() from this.
-             *          Meaning we don't know where the input is coming from.
-             *          And checking every field every time
-             *          the user updates is inefficient.
-             *          Thus I let documentListener do that task.
-             *
-             * Q  -  Where's the remove method?
-             * A  -  There's no need to check what user removed.
-             *
-             * Q  -  Where's the insertString method?
-             * A  -  That method only gets invoked when
-             *       textField.getDocument().insertString() is used.
-             *       When the user edit the textField,
-             *       it only invokes replace method.
+            /**
+             * Find out which document it was called from,
+             * calls to update() then update the total value
              */
-        };
-
-        DocumentListener documentListener = new DocumentListener() {
-            private int int100 = 0;
-            private int int50 = 0;
-            private int int10 = 0;
-            private int int5 = 0;
-            private int int1 = 0;
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                sort(e);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                sort(e);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-            }
-
-            private void sort(DocumentEvent e) {
-                if (e.getDocument() == quan100.getDocument())
+            private void sort(FilterBypass fb) {
+                if (fb.getDocument() == quan100.getDocument())
                     int100 = update(100, quan100, value100);
-                else if (e.getDocument() == quan50.getDocument())
+                else if (fb.getDocument() == quan50.getDocument())
                     int50 = update(50, quan50, value50);
-                else if (e.getDocument() == quan10.getDocument())
+                else if (fb.getDocument() == quan10.getDocument())
                     int10 = update(10, quan10, value10);
-                else if (e.getDocument() == quan5.getDocument())
+                else if (fb.getDocument() == quan5.getDocument())
                     int5 = update(5, quan5, value5);
                 else
                     int1 = update(1, quan1, value1);
                 total.setText(int100 + int50 + int10 + int5 + int1 + ".00");
             }
 
+            /**
+             * Calls from sort() to update given fields
+             * @param denominator Value to multiply
+             * @param quantity textField to get quantity
+             * @param value textField to set value
+             */
             private int update(int denominator, JTextField quantity, JTextField value) {
                 int i;
                 if (!quantity.getText().isEmpty())
@@ -191,11 +184,6 @@ class JpnTable extends JPanel {
         ((AbstractDocument) (quan10.getDocument())).setDocumentFilter(documentFilter);
         ((AbstractDocument) (quan5.getDocument())).setDocumentFilter(documentFilter);
         ((AbstractDocument) (quan1.getDocument())).setDocumentFilter(documentFilter);
-        quan100.getDocument().addDocumentListener(documentListener);
-        quan50.getDocument().addDocumentListener(documentListener);
-        quan10.getDocument().addDocumentListener(documentListener);
-        quan5.getDocument().addDocumentListener(documentListener);
-        quan1.getDocument().addDocumentListener(documentListener);
 
         value100.setEditable(false);
         value50.setEditable(false);
@@ -222,5 +210,28 @@ class JpnTable extends JPanel {
         value5.setHorizontalAlignment(JTextField.RIGHT);
         value1.setHorizontalAlignment(JTextField.RIGHT);
         total.setHorizontalAlignment(JTextField.RIGHT);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String quan100s = quan100.getText();
+        String quan50s = quan50.getText();
+        String quan10s = quan10.getText();
+        String quan5s = quan5.getText();
+        String quan1s = quan1.getText();
+
+        if (!(quan100s.isEmpty() || quan100s.equals("0")))
+            stringBuilder.append("Denom = 100 Qty = ").append(quan100s).append("\n");
+        if (!(quan50s.isEmpty() || quan50s.equals("0")))
+            stringBuilder.append("Denom = 50  Qty = ").append(quan50s).append("\n");
+        if (!(quan10s.isEmpty() || quan10s.equals("0")))
+            stringBuilder.append("Denom = 10  Qty = ").append(quan10s).append("\n");
+        if (!(quan5s.isEmpty() || quan5s.equals("0")))
+            stringBuilder.append("Denom = 5   Qty = ").append(quan5s).append("\n");
+        if (!(quan1s.isEmpty() || quan1s.equals("0")))
+            stringBuilder.append("Denom = 1   Qty = ").append(quan1s).append("\n");
+
+        return stringBuilder.toString();
     }
 }
