@@ -4,6 +4,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.text.NumberFormat;
 
 public class Practical3Q5 extends JFrame {
     public static void main(String[] args) {
@@ -69,18 +70,24 @@ class JpnTeller extends JPanel {
 }
 
 class JpnTable extends JPanel {
-    private static JTextField quan100 = new JTextField("0");
-    private static JTextField quan50 = new JTextField("0");
-    private static JTextField quan10 = new JTextField("0");
-    private static JTextField quan5 = new JTextField("0");
-    private static JTextField quan1 = new JTextField("0");
-    private static JTextField value100 = new JTextField("0.00");
-    private static JTextField value50 = new JTextField("0.00");
-    private static JTextField value10 = new JTextField("0.00");
-    private static JTextField value5 = new JTextField("0.00");
-    private static JTextField value1 = new JTextField("0.00");
-    private static JTextField total = new JTextField("0.00");
+    private static JFormattedTextField quan100 = new JFormattedTextField(NumberFormat.getNumberInstance());
+    private static JFormattedTextField quan50 = new JFormattedTextField("0");
+    private static JFormattedTextField quan10 = new JFormattedTextField("0");
+    private static JFormattedTextField quan5 = new JFormattedTextField("0");
+    private static JFormattedTextField quan1 = new JFormattedTextField("0");
+    private static JFormattedTextField value100 = new JFormattedTextField("0.00");
+    private static JFormattedTextField value50 = new JFormattedTextField("0.00");
+    private static JFormattedTextField value10 = new JFormattedTextField("0.00");
+    private static JFormattedTextField value5 = new JFormattedTextField("0.00");
+    private static JFormattedTextField value1 = new JFormattedTextField("0.00");
+    private static JFormattedTextField total = new JFormattedTextField("0.00");
 
+    /*TODO find commitEdit callers
+    https://docs.oracle.com/javase/tutorial/uiswing/components/formattedtextfield.html#constructors
+    Some formatters might update the value constantly,
+    rendering the loss of focus meaningless,
+    as the value is always the same as what the text specifies.
+    */
     JpnTable() {
         super.setLayout(new GridLayout(7, 3));
         add(new JLabel("Denomination", SwingConstants.CENTER));
@@ -105,7 +112,7 @@ class JpnTable extends JPanel {
         add(new JLabel(""));
         add(total);
 
-        DocumentFilter documentFilter = new DocumentFilter() {
+        DocumentFilter digitFilter = new DocumentFilter() {
             private int int100 = 0;
             private int int50 = 0;
             private int int10 = 0;
@@ -167,7 +174,7 @@ class JpnTable extends JPanel {
              * @param quantity textField to get quantity
              * @param value textField to set value
              */
-            private int update(int denominator, JTextField quantity, JTextField value) {
+            private int update(int denominator, JFormattedTextField quantity, JFormattedTextField value) {
                 int i;
                 if (!quantity.getText().isEmpty())
                     i = Integer.parseInt(quantity.getText()) * denominator;
@@ -179,11 +186,11 @@ class JpnTable extends JPanel {
             }
         };
 
-        ((AbstractDocument) (quan100.getDocument())).setDocumentFilter(documentFilter);
-        ((AbstractDocument) (quan50.getDocument())).setDocumentFilter(documentFilter);
-        ((AbstractDocument) (quan10.getDocument())).setDocumentFilter(documentFilter);
-        ((AbstractDocument) (quan5.getDocument())).setDocumentFilter(documentFilter);
-        ((AbstractDocument) (quan1.getDocument())).setDocumentFilter(documentFilter);
+        ((AbstractDocument) (quan100.getDocument())).setDocumentFilter(digitFilter);
+        ((AbstractDocument) (quan50.getDocument())).setDocumentFilter(digitFilter);
+        ((AbstractDocument) (quan10.getDocument())).setDocumentFilter(digitFilter);
+        ((AbstractDocument) (quan5.getDocument())).setDocumentFilter(digitFilter);
+        ((AbstractDocument) (quan1.getDocument())).setDocumentFilter(digitFilter);
 
         value100.setEditable(false);
         value50.setEditable(false);
