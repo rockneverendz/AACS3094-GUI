@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Practical3" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Practical4" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src/Practical1" />
       <excludeFolder url="file://$MODULE_DIR$/src/Practical2" />
     </content>

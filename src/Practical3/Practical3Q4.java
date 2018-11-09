@@ -8,7 +8,7 @@ public class Practical3Q4 extends JFrame {
     }
 
     private Practical3Q4() {
-        setLayout(new GridLayout(2, 1));
+        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         JPanel jpnCalc = new JpnCalc();
         JPanel jpnBttn = new JPanel();
@@ -33,10 +33,34 @@ public class Practical3Q4 extends JFrame {
         jbtMul.setMnemonic(KeyEvent.VK_M);
         jbtDiv.setMnemonic(KeyEvent.VK_D);
 
-        jbtAdd.addActionListener(e -> JpnCalc.add());
-        jbtSub.addActionListener(e -> JpnCalc.sub());
-        jbtMul.addActionListener(e -> JpnCalc.mul());
-        jbtDiv.addActionListener(e -> JpnCalc.div());
+        jbtAdd.addActionListener(e -> {
+            try {
+                JpnCalc.add();
+            } catch (NumberFormatException nFE) {
+                numbrFrmtMsgger(nFE);
+            }
+        });
+        jbtSub.addActionListener(e -> {
+            try {
+                JpnCalc.sub();
+            } catch (NumberFormatException nFE) {
+                numbrFrmtMsgger(nFE);
+            }
+        });
+        jbtMul.addActionListener(e -> {
+            try {
+                JpnCalc.mul();
+            } catch (NumberFormatException nFE) {
+                numbrFrmtMsgger(nFE);
+            }
+        });
+        jbtDiv.addActionListener(e -> {
+            try {
+                JpnCalc.div();
+            } catch (NumberFormatException nFE) {
+                numbrFrmtMsgger(nFE);
+            }
+        });
 
         pack();
         super.setTitle("Simple Calculator");
@@ -44,6 +68,16 @@ public class Practical3Q4 extends JFrame {
         super.setLocationRelativeTo(null);
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setVisible(true);
+    }
+
+    private void numbrFrmtMsgger(NumberFormatException e) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Invalid Number\n"+ e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        JpnCalc.clear();
+        //e.printStackTrace();
     }
 }
 
@@ -86,5 +120,11 @@ class JpnCalc extends JPanel {
 
     static void div() {
         result.setText(String.format("%.2f", getFirst() / getSecond()));
+    }
+
+    static void clear(){
+        first.setText("");
+        second.setText("");
+        first.requestFocus();
     }
 }

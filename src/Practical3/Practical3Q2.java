@@ -16,7 +16,17 @@ public class Practical3Q2 extends JFrame {
         jpnComplete.add(jbtButton);
         jpnComplete.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        jbtButton.addActionListener(e -> JpnInput.calc());
+        jbtButton.addActionListener(e -> {
+            try {
+                JpnInput.calc();
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Invalid number inserted",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         add(jpnInput, BorderLayout.CENTER);
         add(jpnComplete, BorderLayout.SOUTH);
@@ -29,16 +39,16 @@ public class Practical3Q2 extends JFrame {
     }
 }
 
-class JpnInput extends JPanel{
+class JpnInput extends JPanel {
     private static JTextField annualInterestRate = new JTextField();
     private static JTextField numberOfYears = new JTextField();
     private static JTextField loanAmount = new JTextField();
     private static JTextField monthlyPayment = new JTextField();
     private static JTextField totalPayment = new JTextField();
 
-    JpnInput(){
+    JpnInput() {
         setBorder(new TitledBorder("Enter loan amount, interest rate, and years"));
-        super.setLayout(new GridLayout(5,2));
+        super.setLayout(new GridLayout(5, 2));
 
         add(new JLabel("Annual Interest Rate"));
         add(annualInterestRate);
@@ -54,14 +64,14 @@ class JpnInput extends JPanel{
         totalPayment.setEditable(false);
     }
 
-    static void calc(){
+    static void calc() {
         double x2 = Double.parseDouble(annualInterestRate.getText());
         int y2 = Integer.parseInt(numberOfYears.getText());
         double z2 = Double.parseDouble(loanAmount.getText());
 
         Loan loan = new Loan(x2, y2, z2);
 
-        monthlyPayment.setText(String.format("%.2f",loan.getMonthlyPayment()));
-        totalPayment.setText(String.format("%.2f",loan.getTotalPayment()));
+        monthlyPayment.setText(String.format("%.2f", loan.getMonthlyPayment()));
+        totalPayment.setText(String.format("%.2f", loan.getTotalPayment()));
     }
 }
