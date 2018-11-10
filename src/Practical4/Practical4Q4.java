@@ -1,5 +1,3 @@
-import com.sun.jdi.InvalidLineNumberException;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,18 +22,18 @@ public class Practical4Q4 extends JFrame {
         add(jbtSubmit);
         add(jtaLog);
         jtaLog.setPreferredSize(new Dimension(200, 200));
-        //jtaLog.setFont("SANS",Color.RED);
         jbtSubmit.addActionListener(e -> {
             try {
                 Password password = new Password(jpfPassword.getPassword());
+                jtaLog.setForeground(Color.blue);
                 jtaLog.setText("Valid!");
             } catch (InvalidPasswordException ex) {
+                jtaLog.setForeground(Color.red);
                 jtaLog.setText(ex.getMessage());
-
             }
         });
 
-        //jbtSubmit.addActionListener();
+        this.getRootPane().setDefaultButton(jbtSubmit);
 
         pack();
         super.setTitle("Array");
@@ -46,37 +44,37 @@ public class Practical4Q4 extends JFrame {
 }
 
 class Password {
-    private String password = "";
-
-    Password() {
-    }
-
     Password(char[] password) throws InvalidPasswordException {
         StringBuilder errorMessage = new StringBuilder();
         boolean containLetter = false;
         boolean containDigit = false;
 
-        if (password.length == 0)
-            errorMessage.append("Cannot Null/Empty");
-        if (password.length < 6)
-            errorMessage.append("Cannot less then 7 character\n");
+        //Checking if the password is long enough
+        if (password.length < 7)
+            //If password is NULL, no more is required to check.
+            if (password.length == 0)
+                throw new InvalidPasswordException("Password cannot be null or empty");
+            else
+                errorMessage.append("Password must have at least 7 alpha-numeric characters\n");
 
+        //Checking if there's at least one letter
         for (int i = 0; i < password.length; i++)
             if (Character.isLetter(password[i])) {
                 containLetter = true;
                 i = password.length;
             }
 
+        //Checking if there's at least one digit
         for (int i = 0; i < password.length; i++)
             if (Character.isDigit(password[i])) {
                 containDigit = true;
                 i = password.length;
             }
-
+            
         if (!containLetter)
-            errorMessage.append("Your password should have at least 1 letter\n");
+            errorMessage.append("Password must have at least 1 letter\n");
         if (!containDigit)
-            errorMessage.append("Your password should have at least 1 digit\n");
+            errorMessage.append("Password must have at least 1 digit\n");
 
         if (!errorMessage.toString().isEmpty())
             throw new InvalidPasswordException(errorMessage.toString());
@@ -84,7 +82,6 @@ class Password {
 }
 
 class InvalidPasswordException extends Exception {
-    public InvalidPasswordException() {}
     InvalidPasswordException(String message) {
         super(message);
     }
