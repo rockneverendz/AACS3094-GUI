@@ -1,7 +1,17 @@
+/*
+class Student extends Exception {
+private static final String name = "Brendan Chew Jian Wen";
+private static final String id = "17WMD05129";
+private static final String programme = "DIA2";
+private static final String group = "F1";
+}
+*/
+
 import javax.swing.*;
 import java.awt.*;
 
 public class Practical4Q4 extends JFrame {
+
     public static void main(String[] args) {
         EventQueue.invokeLater(Practical4Q4::new);
     }
@@ -24,7 +34,7 @@ public class Practical4Q4 extends JFrame {
         jtaLog.setPreferredSize(new Dimension(200, 200));
         jbtSubmit.addActionListener(e -> {
             try {
-                Password password = new Password(jpfPassword.getPassword());
+                new Password(jpfPassword.getPassword());
                 jtaLog.setForeground(Color.blue);
                 jtaLog.setText("Valid!");
             } catch (InvalidPasswordException ex) {
@@ -70,10 +80,10 @@ class Password {
                 containDigit = true;
                 i = password.length;
             }
-            
-        if (!containLetter)
+
+        if (!containLetter) //If it does NOT contain letter do :-
             errorMessage.append("Password must have at least 1 letter\n");
-        if (!containDigit)
+        if (!containDigit) //If it does NOT contain digit do :-
             errorMessage.append("Password must have at least 1 digit\n");
 
         if (!errorMessage.toString().isEmpty())

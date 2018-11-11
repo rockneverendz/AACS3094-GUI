@@ -1,3 +1,12 @@
+/*
+class Student extends Exception {
+private static final String name = "Brendan Chew Jian Wen";
+private static final String id = "17WMD05129";
+private static final String programme = "DIA2";
+private static final String group = "F1";
+}
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
