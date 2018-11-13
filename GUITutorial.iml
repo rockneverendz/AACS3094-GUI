@@ -6,8 +6,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Practical3" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Practical4" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Practical5" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Practical5/Chapter 5 Sample Code Using MS Access" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src/Practical1" />
       <excludeFolder url="file://$MODULE_DIR$/src/Practical2" />
+      <excludeFolder url="file://$MODULE_DIR$/src/Practical3" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
