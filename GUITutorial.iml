@@ -8,11 +8,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Practical4" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Practical5" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Practical5/Chapter 5 Sample Code Using MS Access" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Practical5/FourTierApp/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src/Practical1" />
       <excludeFolder url="file://$MODULE_DIR$/src/Practical2" />
-      <excludeFolder url="file://$MODULE_DIR$/src/Practical3" />
+      <excludeFolder url="file://$MODULE_DIR$/src/Practical5/FourTierApp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Derby" level="project" />
   </component>
 </module>

@@ -8,8 +8,7 @@ public class Programme implements Serializable {
     private String name;
     private String faculty;
 
-    public Programme() {
-    }
+    public Programme() {}
 
     public Programme(String code) {
         this.code = code;
@@ -54,24 +53,14 @@ public class Programme implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         final Programme other = (Programme) obj;
-        if (!Objects.equals(this.code, other.code)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.code, other.code);
     }
 
     @Override
     public String toString() {
         return String.format("%-5s %-50s %-10s", code, name, faculty);
     }
-    
-    
-    
 }

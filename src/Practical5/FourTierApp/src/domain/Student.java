@@ -84,23 +84,14 @@ public class Student implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         final Student other = (Student) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-20s %-30s %-5c %-5s", id, ic, name, level, programme.getCode()+year);
+        return String.format("%-15s %-20s %-30s %-5c %-5s", id, ic, name, level, programme.getCode() + year);
     }
-    
-    
 }

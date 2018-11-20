@@ -1,3 +1,6 @@
 .idea/*
 .vscode/*
 out/*
+nbproject/*
+collegeDB/*
+derby.log
