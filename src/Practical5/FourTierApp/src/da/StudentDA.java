@@ -131,6 +131,7 @@ public class StudentDA {
     }
 
     public static void shutDown() {
-        DA.shutDown(conn);
+        ProgrammeDA.shutDown(); //Shutdown connection to Programme DB
+        DA.shutDown(conn); //Shutdown connection to Student DB
     }
 }

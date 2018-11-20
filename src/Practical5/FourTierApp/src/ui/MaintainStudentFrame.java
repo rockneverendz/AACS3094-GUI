@@ -186,8 +186,7 @@ public class MaintainStudentFrame extends JFrame {
         jtfYear.setText("");
     }
 
-
-    public static void main(String[] args) {
+    public static void main() {
         MaintainStudentFrame frm = new MaintainStudentFrame();
         frm.setTitle("Student CRUD");
         frm.setSize(600, 400);

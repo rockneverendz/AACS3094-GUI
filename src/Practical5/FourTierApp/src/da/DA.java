@@ -28,6 +28,7 @@ class DA {
         if (conn != null)
             try {
                 conn.close();
+                System.out.println("***TRACE: Connection to terminated safely.");
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(
                         null,

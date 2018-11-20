@@ -157,7 +157,7 @@ public class MaintainProgrammeFrame extends JFrame {
         jtfName.setText("");
     }
 
-    public static void main(String[] args) {
+    public static void main() {
         MaintainProgrammeFrame frm = new MaintainProgrammeFrame();
         frm.setTitle("Programme CRUD");
         frm.setSize(600, 200);
