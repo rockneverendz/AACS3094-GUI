@@ -9,8 +9,6 @@ private static final String group = "F1";
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Practical6Q1 extends JFrame {
     private static JTextField jtfName = new JTextField();
@@ -30,6 +28,7 @@ public class Practical6Q1 extends JFrame {
             "SQL Server"
     };
 
+    private static ButtonGroup btg = new ButtonGroup();
     private static JRadioButton[] jrbProgramme = new JRadioButton[programme.length]; //Initialize an array with the number of programme
     private static JCheckBox[] jcbSoftware = new JCheckBox[software.length]; //Initialize an array with the number of software
 
@@ -38,7 +37,6 @@ public class Practical6Q1 extends JFrame {
     private static JButton jbtConfirm = new JButton("Confirm");
     private static JButton jbtClear = new JButton("Clear");
     private static JButton jbtExit = new JButton("Exit");
-
 
     public static void main(String[] args) {
         EventQueue.invokeLater(Practical6Q1::new);
@@ -56,17 +54,13 @@ public class Practical6Q1 extends JFrame {
         JPanel jpnWest = new JPanel();
         jpnWest.setLayout(new GridLayout(5, 1));
         jpnWest.add(new JLabel("Programme"));
-        ButtonGroup btg = new ButtonGroup();
         for (int i = 0; i < programme.length; i++) {
             jrbProgramme[i] = new JRadioButton(programme[i]); //Add name to object
             btg.add(jrbProgramme[i]); //Add object to group
             jpnWest.add(jrbProgramme[i]); //Add object to panel
             int finalI = i; //Finalize index for next line
-            jrbProgramme[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    jrbIndex = finalI; //Once the button is pressed, it will change jrbIndex
-                }
+            jrbProgramme[i].addActionListener(e -> {
+                jrbIndex = finalI; //Once the button is pressed, it will change jrbIndex
             });
         }
 
@@ -90,26 +84,80 @@ public class Practical6Q1 extends JFrame {
         add(jpnEast, BorderLayout.EAST);
         add(jpnSouth, BorderLayout.SOUTH);
 
-        jbtConfirm.addActionListener(new confirmListener());
+        jbtConfirm.addActionListener(e -> {
+            try {
+                confirmListener();
+            } catch (IndexOutOfBoundsException ex) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Programme selection cannot be null",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        ex.getMessage(),
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+        jbtClear.addActionListener(e -> {
+            jtfID.setText("");
+            jtfName.setText("");
+            btg.clearSelection();
+            for (JCheckBox jcb : jcbSoftware) {
+                jcb.setSelected(false);
+            }
+        });
+        jbtExit.addActionListener(e -> System.exit(0));
 
         setTitle("CheckOutSystem");
-        //setSize(600, 200);
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
-    private class confirmListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println(jtfName.getText());
-            System.out.println(jtfID.getText());
-            System.out.println(jrbIndex);
-            for (JCheckBox jcb : jcbSoftware){
-                System.out.println(jcb.isSelected());
-            }
+    private static void confirmListener() throws Exception {
+        boolean containSoftware = false; //Used to check if there's at least one software selected
 
+        if (jtfName.getText().isEmpty())
+            throw new Exception("Name field cannot be empty");
+        if (jtfID.getText().isEmpty())
+            throw new Exception("ID field cannot be empty");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append("Name : ").append(jtfName.getText()).append('\n')
+                .append("ID : ").append(jtfID.getText()).append('\n')
+                .append("Programme : ").append(programme[jrbIndex]).append('\n') //If -1, throw IndexOutOfBoundsException.
+                .append("Software ------- ").append('\n');
+        for (int i = 0; i < software.length; i++) {
+            if (jcbSoftware[i].isSelected()) {
+                stringBuilder.append(software[i]).append('\n');
+                containSoftware = true;
+            }
         }
+        if (!containSoftware) //If none checkboxes are selected, throw.
+            throw new Exception("Software selection cannot be null");
+
+        stringBuilder.append("\n\nIs the above information correct?");
+
+        int n = JOptionPane.showConfirmDialog(
+                null,
+                stringBuilder.toString(),
+                "Check Information",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (n == JOptionPane.YES_OPTION)
+            JOptionPane.showMessageDialog(
+                    null,
+                    "YEET",
+                    "Message",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
     }
 }
