@@ -30,7 +30,6 @@ public class Practical6Q3 extends JFrame {
 
     private static ButtonGroup btg = new ButtonGroup();
     private static JRadioButton[] jrbProgramme = new JRadioButton[programme.length]; //Initialize an array with the number of programme
-    private static JCheckBox[] jcbSoftware = new JCheckBox[software.length]; //Initialize an array with the number of software
 
     private static int jrbIndex = -1;
 
@@ -107,9 +106,7 @@ public class Practical6Q3 extends JFrame {
             jtfID.setText("");
             jtfName.setText("");
             btg.clearSelection();
-            for (JCheckBox jcb : jcbSoftware) {
-                jcb.setSelected(false);
-            }
+            jList.clearSelection();
         });
         jbtExit.addActionListener(e -> System.exit(0));
 
@@ -130,7 +127,7 @@ public class Practical6Q3 extends JFrame {
 
         if (jListSelectedIndices.length == 0) {
             throw new Exception("Software selection cannot be null");
-        }
+        } //Check if there's at least one selected.
 
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -140,8 +137,8 @@ public class Practical6Q3 extends JFrame {
                 .append("Programme : ").append(programme[jrbIndex]).append('\n') //If -1, throw IndexOutOfBoundsException.
                 .append("Software ------- ").append('\n');
 
-        for (int i = 0; i < jListSelectedIndices.length; i++) {
-            stringBuilder.append(software[i]).append('\n');
+        for (int jListSelectedIndice : jListSelectedIndices) {
+            stringBuilder.append(software[jListSelectedIndice]).append('\n');
         }
 
         stringBuilder.append("\n\nIs the above information correct?");
