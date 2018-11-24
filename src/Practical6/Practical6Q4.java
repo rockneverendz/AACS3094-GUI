@@ -9,8 +9,9 @@ private static final String group = "F1";
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class Practical6Q2 extends JFrame {
+public class Practical6Q4 extends JFrame {
     private static JTextField jtfName = new JTextField();
     private static JTextField jtfID = new JTextField();
 
@@ -28,18 +29,23 @@ public class Practical6Q2 extends JFrame {
             "SQL Server"
     };
 
-    private static JComboBox<String> jcbProgramme = new JComboBox<>(programme); //<> to let compiler verify type safety
+    private static ButtonGroup btg = new ButtonGroup();
+    private static JRadioButton[] jrbProgramme = new JRadioButton[programme.length]; //Initialize an array with the number of programme
     private static JCheckBox[] jcbSoftware = new JCheckBox[software.length]; //Initialize an array with the number of software
+    private static ArrayList<String> softwareSelected = new ArrayList<>();
+
+
+    private static int jrbIndex = -1;
 
     private static JButton jbtConfirm = new JButton("Confirm");
     private static JButton jbtClear = new JButton("Clear");
     private static JButton jbtExit = new JButton("Exit");
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(Practical6Q2::new);
+        EventQueue.invokeLater(Practical6Q4::new);
     }
 
-    private Practical6Q2() {
+    private Practical6Q4() {
 
         JPanel jpnNorth = new JPanel();
         jpnNorth.setLayout(new GridLayout(2, 2));
@@ -51,8 +57,15 @@ public class Practical6Q2 extends JFrame {
         JPanel jpnWest = new JPanel();
         jpnWest.setLayout(new GridLayout(5, 1));
         jpnWest.add(new JLabel("Programme"));
-        jpnWest.add(jcbProgramme);
-        jcbProgramme.setSelectedIndex(-1);
+        for (int i = 0; i < programme.length; i++) {
+            jrbProgramme[i] = new JRadioButton(programme[i]); //Add name to object
+            btg.add(jrbProgramme[i]); //Add object to group
+            jpnWest.add(jrbProgramme[i]); //Add object to panel
+            int finalI = i; //Finalize index for next line
+            jrbProgramme[i].addActionListener(e -> {
+                jrbIndex = finalI; //Once the button is pressed, it will change jrbIndex
+            });
+        }
 
         JPanel jpnEast = new JPanel();
         jpnEast.setLayout(new GridLayout(5, 1));
@@ -60,6 +73,12 @@ public class Practical6Q2 extends JFrame {
         for (int i = 0; i < software.length; i++) {
             jcbSoftware[i] = new JCheckBox(software[i]); //Add name to object
             jpnEast.add(jcbSoftware[i]); //Add object to panel
+            int finalI = i;
+            jcbSoftware[i].addActionListener(e -> {
+                //If it is selected, add string to ArrayList. Otherwise, remove string from ArrayList.
+                if (jcbSoftware[finalI].isSelected()) softwareSelected.add(software[finalI]);
+                else softwareSelected.remove(software[finalI]);
+            });
         }
 
         JPanel jpnSouth = new JPanel();
@@ -83,19 +102,12 @@ public class Practical6Q2 extends JFrame {
                         "ERROR",
                         JOptionPane.ERROR_MESSAGE
                 );
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        ex.getMessage(),
-                        "ERROR",
-                        JOptionPane.ERROR_MESSAGE
-                );
             }
         });
         jbtClear.addActionListener(e -> {
             jtfID.setText("");
             jtfName.setText("");
-            jcbProgramme.setSelectedIndex(-1);
+            btg.clearSelection();
             for (JCheckBox jcb : jcbSoftware) {
                 jcb.setSelected(false);
             }
@@ -109,44 +121,46 @@ public class Practical6Q2 extends JFrame {
         setVisible(true);
     }
 
-    private static void confirmListener() throws Exception {
-        boolean containSoftware = false; //Used to check if there's at least one software selected
-
-        if (jtfName.getText().isEmpty())
-            throw new Exception("Name field cannot be empty");
-        if (jtfID.getText().isEmpty())
-            throw new Exception("ID field cannot be empty");
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder
-                .append("Name : ").append(jtfName.getText()).append('\n')
-                .append("ID : ").append(jtfID.getText()).append('\n')
-                .append("Programme : ").append(jcbProgramme.getSelectedItem()).append('\n') //If -1, throw IndexOutOfBoundsException.
-                .append("Software ------- ").append('\n');
-        for (int i = 0; i < software.length; i++) {
-            if (jcbSoftware[i].isSelected()) {
-                stringBuilder.append(software[i]).append('\n');
-                containSoftware = true;
-            }
-        }
-        if (!containSoftware) //If none checkboxes are selected, throw.
-            throw new Exception("Software selection cannot be null");
-
-        stringBuilder.append("\n\nIs the above information correct?");
-
-        int n = JOptionPane.showConfirmDialog(
-                null,
-                stringBuilder.toString(),
-                "Check Information",
-                JOptionPane.YES_NO_OPTION
+    private static void confirmListener(){
+        SoftwareCheckOut softwareCheckOut = new SoftwareCheckOut(
+                jtfName.getText(),
+                jtfID.getText(),
+                programme[jrbIndex],
+                softwareSelected
         );
 
-        if (n == JOptionPane.YES_OPTION)
-            JOptionPane.showMessageDialog(
-                    null,
-                    "YEET",
-                    "Message",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+        JFrame Window = new JFrame();
+        Window.add(new SubWindow(softwareCheckOut));
+        Window.setVisible(true);
+        Window.setLocationRelativeTo(null);
+        Window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Window.pack();
+    }
+}
+
+class SubWindow extends JPanel {
+    private static JTextPane jTextPane = new JTextPane();
+    SubWindow(SoftwareCheckOut softwareCheckOut) {
+        System.out.println(
+                softwareCheckOut.getName() +
+                        softwareCheckOut.getId() +
+                        softwareCheckOut.getProgramme() +
+                        softwareCheckOut.getSoftwareList()
+        );
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append("Software Checkout Summary\n").append('\n')
+                .append("Student Name : ").append(softwareCheckOut.getName()).append('\n')
+                .append("Student Id : ").append(softwareCheckOut.getId()).append('\n')
+                .append("Programme :  ").append(softwareCheckOut.getProgramme()).append('\n')
+                .append("Software List --------------").append('\n');
+        for (String string:softwareCheckOut.getSoftwareList()){
+            stringBuilder.append(string).append('\n');
+        }
+
+        jTextPane.setText(stringBuilder.toString());
+        jTextPane.setEditable(false);
+
+        add(jTextPane);
     }
 }
